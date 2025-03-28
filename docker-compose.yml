@@ -1,0 +1,34 @@
+version: '3.7'
+services:
+  mysql:
+    platform: linux/x86_64
+    image: mysql:5.7
+    container_name: mysql-nodejs
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: nodejs
+    ports:
+      - "3308:3306"
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - nodejs
+  web:
+    depends_on:
+      - mysql
+    build: ./
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+    restart: unless-stopped
+    container_name: express-nodejs
+    stdin_open: true
+    tty: true
+    networks:
+      - nodejs
+volumes:
+  db:
+networks:
+  nodejs:
